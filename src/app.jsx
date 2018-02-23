@@ -3,8 +3,15 @@ import ReactDOM from 'react-dom';
 import * as d3 from "d3";
 
 class CurrencyCalculator extends React.Component {
-    
-    handleCurrencies = () => {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            rates: []
+        }
+    }
+
+    checkCurrencies = () => {
 
         fetch('http://api.nbp.pl/api/exchangerates/tables/a', {
         headers : {
@@ -17,11 +24,17 @@ class CurrencyCalculator extends React.Component {
                 throw new Error ('Wystąpił błąd');
             })
         .then( data  => {
-            console.log(data);
+            // this.setState = ({
+            //     rates: data[0].rates.code
+            // })
 
-            let todaysRates = data[0].rates;
+            console.log("Wynik", data[0].rates);
 
-            console.log(todaysRates);
+            // let todaysRates = data[0].rates;
+            //
+            // data[0].rates.forEach((e,i) => {
+            //     return <span key={i}>{e}</span>
+            // });
 
             // console.log( data[0].effectiveDate );
             // console.log( data[0].no );
@@ -34,16 +47,25 @@ class CurrencyCalculator extends React.Component {
 
 
     render(){
+
+        let currencyCodes = this.state.rates.forEach((e,i) => {
+           return (
+               <option key={i}>{e.code}</option>
+           )
+        });
+
+        console.log('Kody walut: ' + currencyCodes);
+
         return (
             <div>
                 <h1>Konwerter walutowy</h1>
-                <button onClick={this.handleCurrencies}>Pokaż waluty</button>
+                <button onClick={this.checkCurrencies}>Pokaż waluty</button>
                 <form>
                     <fieldset>
                         <legend>Waluta którą chcesz sprzedać</legend>
                         <p>Wybierz walutę:</p>
                         <select>
-                            <option></option>
+                            {currencyCodes}
                         </select>
                         <br/>
                         <label>Ile chcesz sprzedać?
@@ -73,7 +95,11 @@ class CurrencyCalculator extends React.Component {
 
 class GoldRates extends React.Component {
 
-    handleGold = () => {
+    constructor(props) {
+        super(props)
+    }
+
+    checkGold = () => {
 
         fetch('http://api.nbp.pl/api/cenyzlota', {
         headers : {
@@ -98,7 +124,7 @@ class GoldRates extends React.Component {
         return (
             <div>
                 <h1>Aktualna cena złota</h1>
-                <button onClick={this.handleGold}>Pokaż aktualną cenę złota</button>
+                <button onClick={this.checkGold}>Pokaż aktualną cenę złota</button>
                 <span></span>
             </div>
         )
